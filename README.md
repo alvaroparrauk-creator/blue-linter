@@ -65,6 +65,49 @@ Current parser limitations:
 
 The CLI still returns the placeholder review response until those later pipeline milestones are implemented.
 
+## Local Synthetic Testing
+
+Until the full review pipeline is connected to the CLI, use the sample runner to test the parser and rule engine together.
+
+Using the current Python environment:
+
+```powershell
+python -m pip install -e ".[dev]"
+python .\samples\create_synthetic_docx.py
+python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
+```
+
+Using a PowerShell virtual environment:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+python .\samples\create_synthetic_docx.py
+python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
+```
+
+If PowerShell blocks virtual environment activation, run this in the same terminal session before activating:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+Expected summary output:
+
+```text
+Document: synthetic-style-review.docx
+Parsed blocks: 12
+Findings: 9
+- STYLE-ACRONYM-FIRST-USE: 2
+- STYLE-BULLET-PUNCTUATION: 4
+- STYLE-HEADING-CAPITALISATION: 1
+- STYLE-PERCENT-SPACING: 1
+- STYLE-REPEATED-WHITESPACE: 1
+```
+
 ## Documentation Workflow
 
 Code changes should include a documentation review before commit. Update the README, roadmap, process docs, or feature docs when behavior, public interfaces, verification steps, project status, or workflow expectations change.
