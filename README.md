@@ -77,7 +77,7 @@ Candidate documents are review artifacts, not final approved documents. Later mi
 
 ## Local Synthetic Testing
 
-Until the full review pipeline is connected to the CLI, use the sample runner to test the parser and rule engine together.
+Until the full review pipeline is connected to the CLI, use the sample runners to test the parser, rule engine, and candidate generator together.
 
 Using the current Python environment:
 
@@ -85,6 +85,7 @@ Using the current Python environment:
 python -m pip install -e ".[dev]"
 python .\samples\create_synthetic_docx.py
 python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
+python .\samples\run_synthetic_candidate.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
 ```
 
 Using a PowerShell virtual environment:
@@ -96,6 +97,7 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 python .\samples\create_synthetic_docx.py
 python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
+python .\samples\run_synthetic_candidate.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
 ```
 
 If PowerShell blocks virtual environment activation, run this in the same terminal session before activating:
@@ -117,6 +119,19 @@ Findings: 9
 - STYLE-PERCENT-SPACING: 1
 - STYLE-REPEATED-WHITESPACE: 1
 ```
+
+Expected candidate generation summary:
+
+```text
+Original: samples\synthetic-style-review.docx
+Candidate: samples\synthetic-style-review-candidate.docx
+Parsed blocks: 12
+Findings: 9
+Applied fixes: 2
+Skipped fixes: 0
+```
+
+The candidate file is written to `samples\synthetic-style-review-candidate.docx` for manual inspection.
 
 ## Candidate Generation Testing
 
