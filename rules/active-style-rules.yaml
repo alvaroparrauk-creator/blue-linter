@@ -1,0 +1,68 @@
+id: corporate-style
+version: 0.1.0
+rules:
+  - id: STYLE-PERCENT-SPACING
+    version: 1.0.0
+    name: Percentage spacing
+    category: number-format
+    severity: medium
+    enabled: true
+    type: regex_replace
+    auto_fix: true
+    pattern: '\b(\d+)\s+%'
+    replacement: '\1%'
+    message: Remove spaces between numbers and percent signs.
+
+  - id: STYLE-REPEATED-WHITESPACE
+    version: 1.0.0
+    name: Repeated whitespace
+    category: spacing
+    severity: low
+    enabled: true
+    type: regex_replace
+    auto_fix: true
+    pattern: ' {2,}'
+    replacement: ' '
+    message: Replace repeated spaces with a single space.
+
+  - id: STYLE-BULLET-PUNCTUATION
+    version: 1.0.0
+    name: Bullet punctuation
+    category: punctuation
+    severity: medium
+    enabled: true
+    type: bullet_check
+    auto_fix: false
+    message: Review bullet punctuation for consistency with corporate style.
+
+  - id: STYLE-ACRONYM-FIRST-USE
+    version: 1.0.0
+    name: Acronym first use
+    category: terminology
+    severity: high
+    enabled: true
+    type: acronym_first_use
+    auto_fix: false
+    message: Define acronyms on first use before using the abbreviated form.
+
+  - id: STYLE-HEADING-CAPITALISATION
+    version: 1.0.0
+    name: Heading capitalisation
+    category: headings
+    severity: medium
+    enabled: true
+    type: heading_check
+    auto_fix: false
+    message: Review heading capitalisation against corporate heading style.
+
+  - id: STYLE-DISABLED-EXAMPLE
+    version: 1.0.0
+    name: Disabled example rule
+    category: example
+    severity: low
+    enabled: false
+    type: regex_flag
+    auto_fix: false
+    pattern: '\bexample\b'
+    message: Disabled example rule used to validate active-rule filtering.
+
