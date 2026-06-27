@@ -4,9 +4,124 @@ Use this file as the shared planning surface for near-term work, deferred ideas,
 
 ## Recommended Next
 
-- Decide whether to add richer project profiles for frontend apps, backend services, full-stack apps, libraries, CLIs, and docs-only repos.
+- Implement the local-first `.docx` style review MVP described in `docs/mvp-blueprint.md`.
+- Replace remaining project `TBD` values once the development, test, and packaging commands are established.
 
 ## Near-Term Candidates
+
+### Build Local DOCX Style Review MVP
+
+Status: proposed
+
+Why now:
+- Blue Linter needs a small, reliable foundation before adding UI, backend, or multi-format support.
+- The first version should prove deterministic rule execution, traceable findings, candidate document generation, reports, validation, and ZIP packaging.
+
+Scope:
+- Create a Python package with parser, rule engine, findings model, candidate generator, report generator, validation pass, and ZIP package generator.
+- Add `rules/active-style-rules.yaml` with versioned example rules for percentage spacing, repeated whitespace, bullet punctuation, acronym first-use, and heading capitalisation.
+- Add a CLI that accepts a `.docx` and produces `style-review-package.zip`.
+- Add unit tests for rules and an end-to-end test with a generated sample `.docx`.
+- Document setup, test, and run commands.
+
+Out of scope:
+- Backend service.
+- Web UI.
+- Multiple input formats.
+- Runtime rule uploads.
+- External rule repository.
+- AI-based rewriting.
+
+Expected validation:
+- Unit tests pass.
+- End-to-end test confirms ZIP structure, candidate document, HTML report, JSON report, validation report, copied rules, and audit file.
+- Candidate document is explicitly labelled as pending human review.
+
+Suggested branch:
+- `codex/local-docx-style-review-mvp`
+
+### Prepare Backend-Compatible Core Boundaries
+
+Status: deferred
+
+Why later:
+- The MVP runs locally, but the core should eventually be callable by a backend used by multiple frontend types.
+
+Scope:
+- Keep parsing, rule execution, reporting, and packaging separate from CLI concerns.
+- Define service-layer interfaces that could later sit behind an HTTP API.
+- Avoid filesystem assumptions inside core logic where practical.
+
+Out of scope:
+- Building the backend during the MVP.
+- Authentication, tenancy, queues, or persistent storage.
+
+Expected validation:
+- CLI remains thin and delegates to reusable application services.
+
+Suggested branch:
+- `codex/backend-compatible-core`
+
+### Explore Multi-Format Document Input
+
+Status: deferred
+
+Why later:
+- The MVP only accepts Word `.docx`, but future users may need PDF, Markdown, HTML, or other formats.
+
+Scope:
+- Identify a normalized document model that can represent paragraphs, headings, lists, sections, and locations across formats.
+- Document format-specific parser requirements.
+
+Out of scope:
+- Implementing non-DOCX parsers in the MVP.
+
+Expected validation:
+- Architecture notes show how future parsers can feed the same rule engine.
+
+Suggested branch:
+- `codex/multi-format-input-design`
+
+### External Version-Controlled Rules Repository
+
+Status: deferred
+
+Why later:
+- Rules live inside the app for the MVP, but a separate repository may be better for governance, review, and release control later.
+
+Scope:
+- Design how rule packs could be imported, pinned, validated, and audited from an external version-controlled source.
+- Define rule pack versioning and compatibility expectations.
+
+Out of scope:
+- Runtime user-uploaded rules.
+- Moving rules out of the app during the MVP.
+
+Expected validation:
+- Proposed design preserves deterministic behavior and auditability.
+
+Suggested branch:
+- `codex/external-rules-repo-design`
+
+### Web-Based Interactive Review Interface
+
+Status: deferred
+
+Why later:
+- Human review is central to the product, but a static report is enough for the first MVP.
+
+Scope:
+- Design a web interface for filtering findings, reviewing suggested changes, accepting or rejecting changes, and downloading outputs.
+- Consider how the UI would consume the JSON report and candidate document.
+
+Out of scope:
+- Building the web UI during the MVP.
+
+Expected validation:
+- Design identifies the minimum API/data contract needed for interactive review.
+
+Suggested branch:
+- `codex/interactive-review-ui-design`
 
 ### Default-Branch Skill Prompt Guidance
 
