@@ -23,6 +23,8 @@ The corrected document is always a candidate pending human review.
 
 ## Milestone 1: Project Foundation
 
+Status: completed
+
 Goal: establish the Python project structure, development workflow, and CLI entry point.
 
 Components:
@@ -56,6 +58,8 @@ Acceptance criteria:
 - Project commands are documented.
 
 ## Milestone 2: Rule Pack And Findings Core
+
+Status: implemented, pending merge
 
 Goal: define the version-controlled rule format and the central findings contract before touching `.docx` mutation.
 
@@ -105,6 +109,8 @@ Acceptance criteria:
 - Findings serialize to stable JSON.
 
 ## Milestone 3: Rule Engine
+
+Status: next
 
 Goal: apply enabled deterministic rules to a parsed document model and produce normalized findings.
 

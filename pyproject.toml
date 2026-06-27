@@ -9,6 +9,8 @@ description = "Local-first Word document style compliance tooling."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "pydantic>=2.8,<3.0",
+    "PyYAML>=6.0,<7.0",
     "typer>=0.12,<1.0",
 ]
 
