@@ -2,7 +2,7 @@
 
 Blue Linter is a local-first Word document style compliance tool. The MVP will analyse `.docx` documents against a version-controlled corporate style rule set and produce traceable review outputs for human approval.
 
-The current foundation includes the CLI skeleton, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, a deterministic rule engine, and main-body DOCX paragraph parsing. Candidate documents, reports, validation, and ZIP packaging are planned for later milestones.
+The current foundation includes the CLI skeleton, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, a deterministic rule engine, main-body DOCX paragraph parsing, and conservative candidate document generation. Reports, validation, and ZIP packaging are planned for later milestones.
 
 ## Requirements
 
@@ -65,9 +65,19 @@ Current parser limitations:
 
 The CLI still returns the placeholder review response until those later pipeline milestones are implemented.
 
+## Candidate Documents
+
+The candidate generator copies the original `.docx` and applies only safe deterministic auto-fixes to main-body paragraphs. It currently preserves formatting conservatively by editing single-run paragraphs only; multi-run paragraphs are skipped so inline formatting is not flattened accidentally.
+
+Candidate generation returns a structured result containing the candidate path, copied finding records, applied count, skipped count, and skipped reasons. The original finding objects are not mutated. Applied findings in the returned result are marked with `applied_to_candidate=True` and `review_status="auto_applied"`.
+
+When multiple auto-fix rules affect the same paragraph, fixes are applied in active-rule order so the candidate text is deterministic. Formatting preservation takes priority over applying every possible deterministic fix.
+
+Candidate documents are review artifacts, not final approved documents. Later milestones will connect candidate generation to validation, reports, packaging, and the CLI.
+
 ## Local Synthetic Testing
 
-Until the full review pipeline is connected to the CLI, use the sample runner to test the parser and rule engine together.
+Until the full review pipeline is connected to the CLI, use the sample runners to test the parser, rule engine, and candidate generator together.
 
 Using the current Python environment:
 
@@ -75,6 +85,7 @@ Using the current Python environment:
 python -m pip install -e ".[dev]"
 python .\samples\create_synthetic_docx.py
 python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
+python .\samples\run_synthetic_candidate.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
 ```
 
 Using a PowerShell virtual environment:
@@ -86,6 +97,7 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 python .\samples\create_synthetic_docx.py
 python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
+python .\samples\run_synthetic_candidate.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
 ```
 
 If PowerShell blocks virtual environment activation, run this in the same terminal session before activating:
@@ -107,6 +119,36 @@ Findings: 9
 - STYLE-PERCENT-SPACING: 1
 - STYLE-REPEATED-WHITESPACE: 1
 ```
+
+Expected candidate generation summary:
+
+```text
+Original: samples\synthetic-style-review.docx
+Candidate: samples\synthetic-style-review-candidate.docx
+Parsed blocks: 12
+Findings: 9
+Applied fixes: 2
+Skipped fixes: 0
+```
+
+The candidate file is written to `samples\synthetic-style-review-candidate.docx` for manual inspection.
+
+## Candidate Generation Testing
+
+Candidate generation is currently a library-level capability. To test it locally, run the automated generated-DOCX coverage:
+
+```powershell
+python -m pytest tests\test_candidate.py
+```
+
+To run it with the rest of the suite:
+
+```powershell
+python -m pytest
+python -m ruff check .
+```
+
+The tests generate temporary `.docx` files, create candidate documents, verify that originals remain unchanged, confirm safe fixes are applied, and confirm multi-run paragraphs are skipped to preserve formatting.
 
 ## Documentation Workflow
 
