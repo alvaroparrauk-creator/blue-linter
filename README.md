@@ -2,7 +2,7 @@
 
 Blue Linter is a local-first Word document style compliance tool. The MVP will analyse `.docx` documents against a version-controlled corporate style rule set and produce traceable review outputs for human approval.
 
-The current foundation includes the CLI skeleton, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, and a deterministic rule engine. DOCX parsing, candidate documents, reports, validation, and ZIP packaging are planned for later milestones.
+The current foundation includes the CLI skeleton, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, a deterministic rule engine, and main-body DOCX paragraph parsing. Candidate documents, reports, validation, and ZIP packaging are planned for later milestones.
 
 ## Requirements
 
@@ -51,7 +51,19 @@ The rule engine accepts an internal parsed-document model and enabled style rule
 - bullet punctuation consistency checks
 - acronym first-use checks
 
-The CLI does not yet run the engine against real `.docx` files because DOCX parsing begins in the next milestone.
+The CLI does not yet run the engine against real `.docx` files; later pipeline milestones will connect parsing, rule execution, reporting, and packaging.
+
+## DOCX Parser
+
+The parser reads main-body `.docx` paragraphs with `python-docx` and produces the internal parsed-document model consumed by the rule engine. It preserves paragraph order, stable block IDs, Word style names, block types, and simple heading section context.
+
+Current parser limitations:
+
+- only main-body paragraphs are parsed
+- tables, headers, footers, comments, footnotes, and text boxes are not parsed
+- bullet and list detection uses practical heuristics and may be refined later
+
+The CLI still returns the placeholder review response until those later pipeline milestones are implemented.
 
 ## Documentation Workflow
 

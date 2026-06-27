@@ -110,7 +110,7 @@ Acceptance criteria:
 
 ## Milestone 3: Rule Engine
 
-Status: implemented, pending merge
+Status: completed
 
 Goal: apply enabled deterministic rules to a parsed document model and produce normalized findings.
 
@@ -154,7 +154,7 @@ Acceptance criteria:
 
 ## Milestone 4: DOCX Parser
 
-Status: next
+Status: implemented, pending merge
 
 Goal: read `.docx` files and produce a structured, traceable document model.
 
@@ -188,7 +188,15 @@ Acceptance criteria:
 - Basic bullet/list-like paragraphs are identified.
 - Parsed blocks include stable IDs and locations.
 
+Milestone limitations:
+
+- Parses main-body paragraphs only.
+- Does not parse tables, headers, footers, comments, footnotes, or text boxes.
+- Uses practical heuristics for bullet/list classification.
+
 ## Milestone 5: Candidate Document Generator
+
+Status: next
 
 Goal: create a corrected candidate `.docx` by applying only safe deterministic fixes.
 
