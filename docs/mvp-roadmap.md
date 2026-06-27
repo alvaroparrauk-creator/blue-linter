@@ -59,7 +59,7 @@ Acceptance criteria:
 
 ## Milestone 2: Rule Pack And Findings Core
 
-Status: implemented, pending merge
+Status: completed
 
 Goal: define the version-controlled rule format and the central findings contract before touching `.docx` mutation.
 
@@ -110,7 +110,7 @@ Acceptance criteria:
 
 ## Milestone 3: Rule Engine
 
-Status: next
+Status: implemented, pending merge
 
 Goal: apply enabled deterministic rules to a parsed document model and produce normalized findings.
 
@@ -153,6 +153,8 @@ Acceptance criteria:
 - Unit tests cover each initial rule.
 
 ## Milestone 4: DOCX Parser
+
+Status: next
 
 Goal: read `.docx` files and produce a structured, traceable document model.
 
