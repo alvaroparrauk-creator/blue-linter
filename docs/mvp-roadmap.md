@@ -110,7 +110,7 @@ Acceptance criteria:
 
 ## Milestone 3: Rule Engine
 
-Status: implemented, pending merge
+Status: completed
 
 Goal: apply enabled deterministic rules to a parsed document model and produce normalized findings.
 
@@ -154,7 +154,7 @@ Acceptance criteria:
 
 ## Milestone 4: DOCX Parser
 
-Status: next
+Status: implemented, pending merge
 
 Goal: read `.docx` files and produce a structured, traceable document model.
 
@@ -188,7 +188,15 @@ Acceptance criteria:
 - Basic bullet/list-like paragraphs are identified.
 - Parsed blocks include stable IDs and locations.
 
+Milestone limitations:
+
+- Parses main-body paragraphs only.
+- Does not parse tables, headers, footers, comments, footnotes, or text boxes.
+- Uses practical heuristics for bullet/list classification.
+
 ## Milestone 5: Candidate Document Generator
+
+Status: next
 
 Goal: create a corrected candidate `.docx` by applying only safe deterministic fixes.
 
@@ -366,6 +374,10 @@ The MVP runs locally, but parser, rule engine, candidate generation, reporting, 
 ### Multiple Input Formats
 
 The MVP only accepts `.docx`. Future work may add other parsers that feed the same internal document model.
+
+### Expanded Word Object Parsing
+
+The MVP parser starts with main-body paragraphs only. Future work should add support for additional Word document objects that may contain reviewable text, including tables, headers, footers, comments, footnotes, endnotes, text boxes, captions, and other embedded story parts. This work should preserve document order and produce traceable locations compatible with the existing parsed document and finding models.
 
 ### External Rules Repository
 
