@@ -18,13 +18,13 @@
 Refresh the local app:
 
 ```powershell
-TBD: add local development refresh command
+python -m pip install -e ".[dev]"
 ```
 
 Build or refresh the deployed app when explicitly requested:
 
 ```powershell
-TBD: add release or deploy command
+TBD: add release or deploy command after packaging is introduced
 ```
 
 ## Operating Model
@@ -40,5 +40,5 @@ Workflow guides live in `docs/workflows/`.
 - Project name: `Blue linter`
 - Integration branch: `main`
 - Branch prefix: `codex/`
-- High-churn files or risk areas: `TBD: list high-churn files or risk areas`
-- Default verification commands: `TBD: add verification commands`
+- High-churn files or risk areas: `blue_linter/`, `tests/`, `rules/active-style-rules.yaml`, `docs/mvp-roadmap.md`
+- Default verification commands: `python -m pytest`; `python -m ruff check .`
