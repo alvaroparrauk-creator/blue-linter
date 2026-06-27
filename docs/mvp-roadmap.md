@@ -154,7 +154,7 @@ Acceptance criteria:
 
 ## Milestone 4: DOCX Parser
 
-Status: implemented, pending merge
+Status: completed
 
 Goal: read `.docx` files and produce a structured, traceable document model.
 
@@ -196,7 +196,7 @@ Milestone limitations:
 
 ## Milestone 5: Candidate Document Generator
 
-Status: next
+Status: implemented, pending merge
 
 Goal: create a corrected candidate `.docx` by applying only safe deterministic fixes.
 
@@ -224,7 +224,15 @@ Acceptance criteria:
 - Candidate document can be opened as a valid `.docx`.
 - Candidate document is clearly labelled as pending human review in reports.
 
+Milestone limitations:
+
+- Applies only safe deterministic paragraph-level fixes.
+- Preserves formatting conservatively by skipping multi-run paragraphs.
+- Does not run candidate validation; validation begins in Milestone 6.
+
 ## Milestone 6: Validation Pass
+
+Status: next
 
 Goal: re-run the rule engine against the candidate document and report remaining findings.
 

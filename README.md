@@ -2,7 +2,7 @@
 
 Blue Linter is a local-first Word document style compliance tool. The MVP will analyse `.docx` documents against a version-controlled corporate style rule set and produce traceable review outputs for human approval.
 
-The current foundation includes the CLI skeleton, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, a deterministic rule engine, and main-body DOCX paragraph parsing. Candidate documents, reports, validation, and ZIP packaging are planned for later milestones.
+The current foundation includes the CLI skeleton, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, a deterministic rule engine, main-body DOCX paragraph parsing, and conservative candidate document generation. Reports, validation, and ZIP packaging are planned for later milestones.
 
 ## Requirements
 
@@ -64,6 +64,12 @@ Current parser limitations:
 - bullet and list detection uses practical heuristics and may be refined later
 
 The CLI still returns the placeholder review response until those later pipeline milestones are implemented.
+
+## Candidate Documents
+
+The candidate generator copies the original `.docx` and applies only safe deterministic auto-fixes to main-body paragraphs. It currently preserves formatting conservatively by editing single-run paragraphs only; multi-run paragraphs are skipped so inline formatting is not flattened accidentally.
+
+Candidate documents are review artifacts, not final approved documents. Later milestones will connect candidate generation to validation, reports, packaging, and the CLI.
 
 ## Local Synthetic Testing
 
