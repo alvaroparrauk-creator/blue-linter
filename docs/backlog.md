@@ -4,14 +4,14 @@ Use this file as the shared planning surface for near-term work, deferred ideas,
 
 ## Recommended Next
 
-- Implement the local-first `.docx` style review MVP described in `docs/mvp-blueprint.md`.
+- Implement Milestone 3: rule engine execution over a parsed document model.
 - Replace remaining project `TBD` values once the development, test, and packaging commands are established.
 
 ## Near-Term Candidates
 
 ### Build Local DOCX Style Review MVP
 
-Status: proposed
+Status: in progress
 
 Why now:
 - Blue Linter needs a small, reliable foundation before adding UI, backend, or multi-format support.

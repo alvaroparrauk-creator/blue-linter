@@ -3,6 +3,7 @@
 .ruff_cache/
 .gh-cli/
 .codex-git/
+.tmp/
 scripts/git-askpass-gh.ps1
 __pycache__/
 *.py[cod]
