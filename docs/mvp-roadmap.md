@@ -375,6 +375,10 @@ The MVP runs locally, but parser, rule engine, candidate generation, reporting, 
 
 The MVP only accepts `.docx`. Future work may add other parsers that feed the same internal document model.
 
+### Expanded Word Object Parsing
+
+The MVP parser starts with main-body paragraphs only. Future work should add support for additional Word document objects that may contain reviewable text, including tables, headers, footers, comments, footnotes, endnotes, text boxes, captions, and other embedded story parts. This work should preserve document order and produce traceable locations compatible with the existing parsed document and finding models.
+
 ### External Rules Repository
 
 The MVP stores rules inside this repository. Future work may move rules to a separate version-controlled repository with pinned versions and audit metadata.
