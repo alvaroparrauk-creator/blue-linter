@@ -18,16 +18,19 @@ For feature work, non-trivial UI changes, deployment changes, guardrail changes,
 3. Wait for explicit user approval before implementing when the project process requires approval.
 4. Implement the approved scope end-to-end.
 5. Verify with the relevant Docker, frontend, backend, deployment, or documentation checks.
-6. Update relevant documentation when behavior, configuration, deployment, workflows, or project status changes.
-7. Commit and push after the feature is complete and verified.
-8. Create a pull request for review.
-9. Provide a short validation note covering what changed, how to test it, useful non-GUI checks, and which verification commands ran.
+6. Review documentation impact for every code change, including README, roadmap, process docs, feature docs, and backlog/status docs.
+7. Update relevant documentation when behavior, public interfaces, configuration, deployment, workflows, verification steps, or project status changes.
+8. Commit and push after the feature is complete and verified.
+9. Create a pull request for review.
+10. Provide a short validation note covering what changed, how to test it, useful non-GUI checks, which verification commands ran, and what docs were updated or reviewed.
 
 Tiny, clearly scoped fixes may be implemented directly unless the user or project instructions require a plan first.
 
 ## Documentation Expectations
 
-Before deciding whether docs need updates, check the project README, feature docs, infrastructure docs, evaluation docs, and backlog. Prefer targeted updates over broad rewrites.
+Before deciding whether docs need updates, check the project README, roadmap, feature docs, infrastructure docs, evaluation docs, process docs, and backlog. Prefer targeted updates over broad rewrites.
+
+For code changes, document the decision explicitly in the PR or final validation note: either list the docs updated or state that the docs were reviewed and no changes were needed.
 
 When defining a recurring specialist agent role, create or update a reusable role guide under `docs/agent-roles/`.
 

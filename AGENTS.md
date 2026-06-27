@@ -10,7 +10,8 @@
 - Use one branch per agent, normally with the `codex/` prefix.
 - Inspect relevant code and project context before planning or editing.
 - For non-trivial work, produce a plan and wait for explicit approval before implementing.
-- Update docs when product behavior, configuration, deployment, workflows, or project status changes.
+- Review documentation impact for every code change.
+- Update docs when product behavior, public interfaces, configuration, deployment, workflows, verification steps, or project status changes.
 - Commit, push, and create a pull request after verified implementation unless the user says otherwise.
 
 ## Standard Commands
