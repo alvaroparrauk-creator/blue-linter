@@ -230,6 +230,13 @@ Milestone limitations:
 - Preserves formatting conservatively by skipping multi-run paragraphs.
 - Does not run candidate validation; validation begins in Milestone 6.
 
+Implementation decisions:
+
+- Candidate generation returns a structured result with candidate path, copied findings, applied count, skipped count, and skipped reasons.
+- Original finding objects are not mutated; result findings carry any `auto_applied` status updates.
+- Multiple auto-fix rules on the same paragraph are applied in active-rule order for deterministic output.
+- Formatting preservation takes priority over applying every possible deterministic fix.
+
 ## Milestone 6: Validation Pass
 
 Status: next

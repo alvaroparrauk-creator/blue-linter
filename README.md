@@ -69,6 +69,10 @@ The CLI still returns the placeholder review response until those later pipeline
 
 The candidate generator copies the original `.docx` and applies only safe deterministic auto-fixes to main-body paragraphs. It currently preserves formatting conservatively by editing single-run paragraphs only; multi-run paragraphs are skipped so inline formatting is not flattened accidentally.
 
+Candidate generation returns a structured result containing the candidate path, copied finding records, applied count, skipped count, and skipped reasons. The original finding objects are not mutated. Applied findings in the returned result are marked with `applied_to_candidate=True` and `review_status="auto_applied"`.
+
+When multiple auto-fix rules affect the same paragraph, fixes are applied in active-rule order so the candidate text is deterministic. Formatting preservation takes priority over applying every possible deterministic fix.
+
 Candidate documents are review artifacts, not final approved documents. Later milestones will connect candidate generation to validation, reports, packaging, and the CLI.
 
 ## Local Synthetic Testing
@@ -113,6 +117,23 @@ Findings: 9
 - STYLE-PERCENT-SPACING: 1
 - STYLE-REPEATED-WHITESPACE: 1
 ```
+
+## Candidate Generation Testing
+
+Candidate generation is currently a library-level capability. To test it locally, run the automated generated-DOCX coverage:
+
+```powershell
+python -m pytest tests\test_candidate.py
+```
+
+To run it with the rest of the suite:
+
+```powershell
+python -m pytest
+python -m ruff check .
+```
+
+The tests generate temporary `.docx` files, create candidate documents, verify that originals remain unchanged, confirm safe fixes are applied, and confirm multi-run paragraphs are skipped to preserve formatting.
 
 ## Documentation Workflow
 
