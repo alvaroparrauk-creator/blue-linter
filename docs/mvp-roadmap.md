@@ -228,7 +228,7 @@ Milestone limitations:
 
 - Applies only safe deterministic paragraph-level fixes.
 - Preserves formatting conservatively by skipping multi-run paragraphs.
-- Does not run candidate validation; validation begins in Milestone 6.
+- Candidate validation is handled in Milestone 6.
 
 Implementation decisions:
 
@@ -239,7 +239,7 @@ Implementation decisions:
 
 ## Milestone 6: Validation Pass
 
-Status: next
+Status: implemented, pending merge
 
 Goal: re-run the rule engine against the candidate document and report remaining findings.
 
@@ -262,7 +262,15 @@ Acceptance criteria:
 - Manual-review findings remain visible.
 - Validation succeeds even when no findings remain.
 
+Implementation decisions:
+
+- Validation returns a structured result with the candidate path, parsed candidate document, remaining findings, and summary counts.
+- Validation findings are a fresh rule-engine run against the candidate document, not a mutation or merge of the original analysis findings.
+- Validation is read-only with respect to candidate content; it does not apply any additional fixes.
+
 ## Milestone 7: Reports And Audit Output
+
+Status: implemented, pending merge
 
 Goal: generate human-readable and machine-readable reports from the same finding data.
 
@@ -292,7 +300,16 @@ Acceptance criteria:
 - Audit output records run metadata, ruleset version, counts, and generated files.
 - Human and JSON reports are based on the same finding records.
 
+Implementation decisions:
+
+- Report generation is available as a library-level module before CLI pipeline wiring.
+- Analysis findings are enriched with rule categories at report time without changing the core finding model.
+- Missing or stale rule metadata does not fail report generation; the report uses `unknown` as the category.
+- ZIP packaging and CLI integration remain part of later milestones.
+
 ## Milestone 8: ZIP Package Generator
+
+Status: implemented, pending merge
 
 Goal: package all review artifacts into the required output structure.
 
@@ -335,7 +352,16 @@ Acceptance criteria:
 - Included files are not empty.
 - Rules file in the ZIP matches the active rule pack used for the run.
 
+Implementation decisions:
+
+- ZIP packaging is available as a library-level module before CLI pipeline wiring.
+- Packaging consumes existing original, candidate, rule pack, report, and audit artifact paths.
+- Source artifact filenames are normalized to the required archive names inside the ZIP.
+- Required artifacts are validated before the target ZIP is replaced.
+
 ## Milestone 9: End-To-End MVP Verification
+
+Status: implemented, pending merge
 
 Goal: prove the complete local pipeline works with a generated sample `.docx`.
 
@@ -359,7 +385,16 @@ Acceptance criteria:
 - The test does not depend on a manually maintained binary fixture.
 - The generated candidate document can be parsed again.
 
+Implementation decisions:
+
+- `run_review` now orchestrates the full local MVP review workflow.
+- The CLI review command produces the final ZIP package and a short success summary.
+- End-to-end coverage generates DOCX input during the test instead of relying on a binary fixture.
+- Style findings remain successful product output; processing failures return non-zero CLI exits.
+
 ## Milestone 10: MVP Hardening
+
+Status: implemented, pending merge
 
 Goal: make the MVP reliable enough for real local trials.
 
@@ -377,6 +412,13 @@ Acceptance criteria:
 - Common user mistakes produce useful errors.
 - Known limitations are explicit.
 - Development, test, and run commands are documented.
+
+Implementation decisions:
+
+- Workflow errors name the failed pipeline stage so CLI users can identify the problem.
+- Manual bullet and list marker detection covers common plain-text list formats.
+- HTML reports use human-readable applied labels and remind reviewers that candidates require approval.
+- Known MVP limitations are documented in the README.
 
 ## Deferred Roadmap Items
 

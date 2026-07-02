@@ -25,7 +25,7 @@ python -m pip install -e ".[dev]"
 Build or refresh the deployed app when explicitly requested:
 
 ```powershell
-TBD: add release or deploy command after packaging is introduced
+# Not applicable yet; no release or deploy command is defined for the MVP.
 ```
 
 ## Operating Model

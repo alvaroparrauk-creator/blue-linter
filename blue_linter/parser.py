@@ -1,5 +1,6 @@
 """DOCX parsing helpers for Blue Linter."""
 
+import re
 from pathlib import Path
 from zipfile import BadZipFile
 
@@ -9,7 +10,8 @@ from docx.text.paragraph import Paragraph
 
 from blue_linter.document import BlockType, DocumentBlock, ParsedDocument
 
-BULLET_PREFIXES = ("\u2022 ", "- ", "* ", "\u2013 ")
+BULLET_PREFIXES = ("\u2022", "-", "*", "\u2013")
+LIST_PREFIX_PATTERN = re.compile(r"^(?:\d+|[A-Za-z])[\.)]")
 
 
 class DocumentParseError(ValueError):
@@ -95,15 +97,7 @@ def _has_bullet_prefix(stripped_text: str) -> bool:
 
 
 def _has_list_prefix(stripped_text: str) -> bool:
-    if len(stripped_text) < 4:
-        return False
-    marker, separator, following = stripped_text.partition(" ")
-    if not following or separator != " ":
-        return False
-    if marker.endswith((".", ")")):
-        value = marker[:-1]
-        return value.isdigit() or (len(value) == 1 and value.isalpha())
-    return False
+    return LIST_PREFIX_PATTERN.match(stripped_text) is not None
 
 
 def _has_numbering_metadata(paragraph: Paragraph) -> bool:

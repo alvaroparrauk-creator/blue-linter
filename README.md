@@ -2,7 +2,7 @@
 
 Blue Linter is a local-first Word document style compliance tool. The MVP will analyse `.docx` documents against a version-controlled corporate style rule set and produce traceable review outputs for human approval.
 
-The current foundation includes the CLI skeleton, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, a deterministic rule engine, main-body DOCX paragraph parsing, and conservative candidate document generation. Reports, validation, and ZIP packaging are planned for later milestones.
+The current foundation includes the CLI, repository-owned YAML rule pack, typed rule models, active-rule loading, finding models, internal parsed-document models, a deterministic rule engine, main-body DOCX paragraph parsing, conservative candidate document generation, candidate validation, report/audit artifact generation, ZIP package generation, and end-to-end MVP workflow verification.
 
 ## Requirements
 
@@ -23,13 +23,13 @@ Show the installed CLI version:
 blue-linter --version
 ```
 
-Run the placeholder review command:
+Run a local review and write the MVP package:
 
 ```powershell
 blue-linter review .\sample.docx --output .\style-review-package.zip
 ```
 
-The review command currently returns a clear placeholder response. It does not generate a ZIP package until later MVP milestones.
+The review command parses the `.docx`, runs the active rules, creates a candidate document, validates it, generates reports and audit output, and writes the final ZIP package.
 
 ## Rule Pack
 
@@ -51,7 +51,7 @@ The rule engine accepts an internal parsed-document model and enabled style rule
 - bullet punctuation consistency checks
 - acronym first-use checks
 
-The CLI does not yet run the engine against real `.docx` files; later pipeline milestones will connect parsing, rule execution, reporting, and packaging.
+The CLI runs the full local MVP workflow against real `.docx` files and writes the review package.
 
 ## DOCX Parser
 
@@ -73,11 +73,68 @@ Candidate generation returns a structured result containing the candidate path, 
 
 When multiple auto-fix rules affect the same paragraph, fixes are applied in active-rule order so the candidate text is deterministic. Formatting preservation takes priority over applying every possible deterministic fix.
 
-Candidate documents are review artifacts, not final approved documents. Later milestones will connect candidate generation to validation, reports, packaging, and the CLI.
+Candidate documents are review artifacts, not final approved documents. The CLI includes them in the generated review package for human approval.
+
+## Candidate Validation
+
+The validation pass re-parses a generated candidate `.docx`, runs the same active rule set against it, and returns remaining findings with summary counts by severity, rule ID, and review status.
+
+Validation does not apply fixes. It reports whether safe auto-fixes disappeared from the candidate and which manual-review findings still remain visible.
+
+## Reports And Audit Output
+
+The report generator writes static review artifacts from existing finding data:
+
+- `style-analysis-report.html`
+- `style-analysis-report.json`
+- `validation-report.html`
+- `audit.json`
+
+HTML reports are readable without JavaScript. JSON output contains enriched finding records with rule categories, summary counts, run metadata, rule set version, and generated file paths.
+
+## ZIP Package Generation
+
+The package generator writes the required review ZIP layout from already-created artifacts:
+
+```text
+style-review-package.zip
++-- original/
+|   +-- document-original.docx
++-- candidate/
+|   +-- document-style-corrected-candidate.docx
++-- reports/
+|   +-- style-analysis-report.html
+|   +-- style-analysis-report.json
+|   +-- validation-report.html
++-- rules/
+|   +-- active-style-rules.yaml
++-- audit/
+    +-- audit.json
+```
+
+Packaging validates that every required artifact exists, is a file, and is non-empty before replacing the output ZIP. It preserves exact file bytes while normalizing artifact names inside the package.
+
+## End-To-End Review Workflow
+
+The CLI workflow produces the MVP package in one command:
+
+```powershell
+blue-linter review .\sample.docx --output .\style-review-package.zip
+```
+
+Style findings are expected product output and do not make the command fail. Processing failures, such as invalid input documents or unwritable output locations, return a non-zero exit code.
+
+## Known MVP Limitations
+
+- Only `.docx` input is supported.
+- Parsing covers main-body paragraphs only; tables, headers, footers, comments, footnotes, and text boxes are not parsed yet.
+- Candidate generation skips multi-run paragraphs to avoid flattening inline formatting.
+- Reports are static HTML and JSON artifacts, not an interactive review interface.
+- Rules are loaded from the repository-owned `rules/active-style-rules.yaml` file and are not uploaded at runtime.
 
 ## Local Synthetic Testing
 
-Until the full review pipeline is connected to the CLI, use the sample runners to test the parser, rule engine, and candidate generator together.
+Use the sample runners to inspect individual parser, rule engine, candidate, and validation steps. The full CLI workflow, report generation, and ZIP package generation are covered by automated tests.
 
 Using the current Python environment:
 
@@ -86,6 +143,7 @@ python -m pip install -e ".[dev]"
 python .\samples\create_synthetic_docx.py
 python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
 python .\samples\run_synthetic_candidate.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
+python .\samples\run_synthetic_validation.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
 ```
 
 Using a PowerShell virtual environment:
@@ -98,6 +156,7 @@ python -m pip install -e ".[dev]"
 python .\samples\create_synthetic_docx.py
 python .\samples\run_synthetic_review.py .\samples\synthetic-style-review.docx
 python .\samples\run_synthetic_candidate.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
+python .\samples\run_synthetic_validation.py .\samples\synthetic-style-review.docx .\samples\synthetic-style-review-candidate.docx
 ```
 
 If PowerShell blocks virtual environment activation, run this in the same terminal session before activating:
@@ -133,12 +192,33 @@ Skipped fixes: 0
 
 The candidate file is written to `samples\synthetic-style-review-candidate.docx` for manual inspection.
 
-## Candidate Generation Testing
+Expected validation summary:
 
-Candidate generation is currently a library-level capability. To test it locally, run the automated generated-DOCX coverage:
+```text
+Original: samples\synthetic-style-review.docx
+Candidate: samples\synthetic-style-review-candidate.docx
+Original findings: 9
+Applied fixes: 2
+Remaining validation findings: 7
+```
+
+## Candidate And Validation Testing
+
+Candidate generation and validation are currently library-level capabilities. To test them locally, run the automated generated-DOCX coverage:
 
 ```powershell
 python -m pytest tests\test_candidate.py
+python -m pytest tests\test_validation.py
+```
+
+If Windows blocks access to the default pytest temp folder, route pytest temp and cache output into the repository's ignored `.tmp` folder:
+
+```powershell
+New-Item -ItemType Directory -Path .tmp\pytest-temp -Force | Out-Null
+New-Item -ItemType Directory -Path .tmp\pytest-cache -Force | Out-Null
+$env:TMP = (Resolve-Path .tmp).Path
+$env:TEMP = (Resolve-Path .tmp).Path
+python -m pytest tests\test_candidate.py tests\test_validation.py --basetemp .tmp\pytest-temp -o cache_dir=.tmp\pytest-cache
 ```
 
 To run it with the rest of the suite:
@@ -148,7 +228,16 @@ python -m pytest
 python -m ruff check .
 ```
 
-The tests generate temporary `.docx` files, create candidate documents, verify that originals remain unchanged, confirm safe fixes are applied, and confirm multi-run paragraphs are skipped to preserve formatting.
+With the same temp-folder workaround:
+
+```powershell
+$env:TMP = (Resolve-Path .tmp).Path
+$env:TEMP = (Resolve-Path .tmp).Path
+python -m pytest --basetemp .tmp\pytest-temp -o cache_dir=.tmp\pytest-cache
+python -m ruff check .
+```
+
+The tests generate temporary `.docx` files, create candidate documents, verify that originals remain unchanged, confirm safe fixes are applied, confirm multi-run paragraphs are skipped to preserve formatting, and confirm validation reports remaining candidate findings without applying more fixes.
 
 ## Documentation Workflow
 

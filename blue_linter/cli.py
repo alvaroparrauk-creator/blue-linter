@@ -6,7 +6,7 @@ from typing import Annotated
 import typer
 
 from blue_linter import __version__
-from blue_linter.app import run_review
+from blue_linter.app import ReviewWorkflowError, run_review
 
 app = typer.Typer(
     help="Blue Linter reviews Word documents against deterministic style rules.",
@@ -51,11 +51,19 @@ def review(
     if input_path.suffix.lower() != ".docx":
         raise typer.BadParameter("Input document must use the .docx extension.")
 
-    result = run_review(input_path=input_path, output_path=output)
+    try:
+        result = run_review(input_path=input_path, output_path=output)
+    except ReviewWorkflowError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
     typer.echo(
-        "Blue Linter review pipeline is not implemented yet. "
-        "Milestone 1 only validates the CLI foundation. "
+        "Blue Linter review completed. "
         f"Input: {result.input_path}; output package: {result.output_path}; "
+        f"findings: {result.finding_count}; "
+        f"auto-applied fixes: {result.applied_fix_count}; "
+        f"skipped fixes: {result.skipped_fix_count}; "
+        f"remaining validation findings: {result.validation_remaining_count}; "
         f"status: {result.status}."
     )
 
